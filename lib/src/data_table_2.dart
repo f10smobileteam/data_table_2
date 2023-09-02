@@ -100,6 +100,12 @@ class DataRow2 extends DataRow {
 // final GestureLongPressCallback? onLongPress;
 }
 
+class DataCell2 extends DataCell {
+  const DataCell2(super.child, this.decoration);
+
+  final Decoration? decoration;
+}
+
 /// In-place replacement of standard [DataTable] widget, mimics it API.
 /// Has the header row always fixed and core of the table (with data rows)
 /// scrollable and stretching to max width/height of it's container.
@@ -436,6 +442,7 @@ class DataTable2 extends DataTable {
       required GestureTapCallback? onRowSecondaryTap,
       required GestureTapDownCallback? onRowSecondaryTapDown,
       required VoidCallback? onSelectChanged,
+      required Decoration? decoration,
       required MaterialStateProperty<Color?>? overlayColor}) {
     final ThemeData themeData = Theme.of(context);
     final DataTableThemeData dataTableTheme = DataTableTheme.of(context);
@@ -459,6 +466,7 @@ class DataTable2 extends DataTable {
 
     label = Container(
       padding: padding,
+      decoration: decoration,
       constraints: BoxConstraints(
           minHeight: specificRowHeight ?? effectiveDataRowMinHeight,
           maxHeight: specificRowHeight ?? effectiveDataRowMaxHeight),
@@ -814,6 +822,17 @@ class DataTable2 extends DataTable {
 
               for (final DataRow row in rows) {
                 final DataCell cell = row.cells[dataColumnIndex];
+                Decoration? decoration;
+                if (cell is DataCell2) {
+                  decoration = cell.decoration;
+                }
+
+                // decoration: const BoxDecoration(
+                //     gradient: LinearGradient(
+                //   colors: [Colors.yellow, Color.fromARGB(104, 55, 240, 79)],
+                //   begin: Alignment.topLeft,
+                //   end: Alignment.bottomRight,
+                // )),
 
                 var c = _buildDataCell(
                     context: context,
@@ -832,6 +851,7 @@ class DataTable2 extends DataTable {
                     onRowTap: row is DataRow2 ? row.onTap : null,
                     onRowDoubleTap: row is DataRow2 ? row.onDoubleTap : null,
                     onRowLongPress: row.onLongPress,
+                    decoration: decoration,
                     onRowSecondaryTap:
                         row is DataRow2 ? row.onSecondaryTap : null,
                     onRowSecondaryTapDown:
